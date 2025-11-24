@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youth Slang Dictionary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --primary: #b64eb8;
+            --primary-light: #4f66bb;
+            --primary-dark: #527fbe;
+            --secondary: #4ecdc4;
+            --dark: #333;
+            --light: #f5f5f5;
+            --gray: #e0e0e0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem 1rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            animation: fadeInDown 1s ease;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            animation: fadeInUp 1s ease 0.2s forwards;
+            opacity: 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--primary-light);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.4s ease;
+        }
+        
+        nav a:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        nav a:hover::before {
+            left: 100%;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: -2rem auto 2rem;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box button:hover {
+            background: var(--primary-dark);
+        }
+        
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .post {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+
+            display: flex;             /* добавили */
+            flex-direction: column;    /* добавили */
+        }
+        
+        .post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .post::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .post:hover::after {
+            height: 8px;
+            background: var(--secondary);
+        }
+        
+        .post h2 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .post p {
+            margin-bottom: 0.8rem;
+        }
+        
+        .post img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            transition: transform 0.3s ease;
+        }
+
+        .post.expanded img {
+            max-height: none;
+        }
+        
+        .post:hover img {
+            transform: scale(1.03);
+        }
+        
+        .tag {
+            display: inline-block;
+            background: var(--gray);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .read-more {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: auto;
+            align-self: flex-start;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .read-more:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .post-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background: rgba(255, 255, 255, 0.9);
+            margin-top: 1rem;
+            border-radius: 8px;
+            padding: 0 1rem;
+        }
+        
+        .post-details.active {
+            max-height: 1000px;
+            padding: 1rem;
+            border: 1px solid var(--gray);
+        }
+        
+        .post-details h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        .post-details ul {
+            padding-left: 1.5rem;
+        }
+        
+        .post-details li {
+            margin-bottom: 0.5rem;
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 4rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+        }
+        
+        .back-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            header {
+                padding: 2rem 1rem 3rem;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            nav {
+                flex-wrap: wrap;
+                padding: 0.5rem;
+            }
+            
+            nav a {
+                margin: 0.3rem;
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .container {
+                max-width: 1200px;
+                margin: 2rem auto;
+                padding: 0 1rem;
+            }
+            
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .post {
+                max-height: 450px;
+                overflow: hidden;
+                transition: max-height 0.4s ease;
+            }
+            
+            .post h2 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Delay animations for posts */
+        .post:nth-child(1) { animation-delay: 0.1s; }
+        .post:nth-child(2) { animation-delay: 0.2s; }
+        .post:nth-child(3) { animation-delay: 0.3s; }
+        .post:nth-child(4) { animation-delay: 0.4s; }
+        .post:nth-child(5) { animation-delay: 0.5s; }
+        .post:nth-child(6) { animation-delay: 0.6s; }
+        .post:nth-child(7) { animation-delay: 0.7s; }
+        .post:nth-child(8) { animation-delay: 0.8s; }
+        .post:nth-child(9) { animation-delay: 0.9s; }
+        .post:nth-child(10) { animation-delay: 1.0s; }
+        .post:nth-child(11) { animation-delay: 1.1s; }
+        .post:nth-child(12) { animation-delay: 1.2s; }
+        .post:nth-child(13) { animation-delay: 1.3s; }
+        .post:nth-child(14) { animation-delay: 1.4s; }
+        .post:nth-child(15) { animation-delay: 1.5s; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Internet memes</h1>
+        <p>There's some text here</p>
+    </header>
+
+    <section class="section mt-5" style="padding-top: 30px;">
+    <div class="container">
+        <div class="posts-grid">
+            <!-- Cat -->
+            <div class="post">
+                <h2>Grumpy Cat</h2>
+                <div>
+                    <span class="tag">Long-lasting</span>
+                </div>
+                <p>A long-lasting internet meme based on the permanently
+                    displeased expression of a cat named Tardar Sauce.
+                    It became one of the most iconic examples of long-term meme
+                    culture.</p>
+                <img src="images/cat.png" alt="Grumpy">
+                <button class="read-more">More</button>
+                
+                <div class="post-details">
+                    <p>The “Grumpy Cat” meme refers to Tardar Sauce, a cat whose naturally grumpy appearance turned her into a global internet sensation. Her photo was first uploaded to Reddit on September 23, 2012, where users suspected the image was photoshopped due to her unique facial structure caused by dwarfism and an underbite.</p>
+                    <p>Unlike short-term memes that quickly disappear, Grumpy Cat became a long-term cultural symbol. She inspired countless captions, merchandise, commercials, and even a book, proving that some memes can outlive the original viral moment and become part of internet history.</p>
+                </div>
+            </div>
+            
+            <!-- Decaprio -->
+            <div class="post">
+                <h2>DiCaprio</h2>
+                <div>
+                    <span class="tag">From-film</span>
+                </div>
+                <p>A meme originating from a scene in The Great Gatsby, where Leonardo DiCaprio raises a glass in a celebratory toast.
+                    It’s used to express approval, celebration, or playful encouragement.</p>
+                <img src="images/decaprio.png" alt="DiCaprio">
+                <button class="read-more">More</button>
+                
+                <div class="post-details">
+                    <p>This meme comes from Baz Luhrmann’s film The Great Gatsby (2013). The iconic frame of Leonardo DiCaprio lifting a champagne glass quickly entered meme culture due to its expressive and easily adaptable nature.</p>
+                    <p>Originally, the image was used to signify approval or to “toast” something someone said online. Over time, the meme expanded into a broader symbol of celebration, encouragement to party, or ironic motivation. One of the most popular versions includes the text:</p>
+                    <p>"A little party never killed nobody"</p>
+                    <p>referencing a song from the movie’s soundtrack and reinforcing the meme’s association with fun and carefree indulgence.</p>
+                </div>
+            </div>
+            
+            <!-- EA -->
+            <div class="post">
+                <h2>EA FIFA</h2>
+                <div>
+                    <span class="tag">Local</span>
+                </div>
+                <p>A local meme understood mainly by gamers, especially fans of the FIFA series.
+                    It mocks EA Sports for releasing nearly identical FIFA installments each year while ignoring criticism.</p>
+                <img src="images/ea.png" alt="EA FIFA">
+                <button class="read-more">More</button>
+                
+                <div class="post-details">
+                    <p>This meme represents a local or specialized meme-one that is understood mostly within a specific community. In this case, the gaming community, particularly FIFA players.</p>
+                    <p>The joke usually shows a job interview where the applicant is only asked:</p>
+                    <p>"Do you know how to copy and paste?"</p>
+                    <p>When the candidate answers "Yes," the interviewer replies:</p>
+                    <p>"You're hired!"</p>
+                    <p>The humor comes from the stereotype that EA Sports releases the same FIFA game every year, making only minimal changes while still receiving consistently low ratings. The meme expresses players’ frustration with the company’s business model in a humorous way.</p>
+                </div>
+            </div>
+            
+            <!-- Super -->
+            <div class="post">
+                <h2>Mr. Incredible</h2>
+                <div>
+                    <span class="tag">Co-opted</span>
+                </div>
+                <p>Co-opted memes are memes that were not intentionally created to go viral but suddenly gained widespread popularity after being noticed and repurposed by internet users. A well-known example comes from the animated film The Incredibles.</p>
+                <img src="images/super.png" alt="Incredible">
+                <button class="read-more">More</button>
+                
+                <div class="post-details">
+                    <p>This image represents a co-opted meme. It originates from the animated film The Incredibles. Characters from this movie - especially Mr. Incredible — have repeatedly become the basis for viral memes.</p>
+                    <p>On October 15, 2020, an artist on Twitter posted a series of illustrations depicting realistic versions of various cartoon characters. Among them was a humanized version of Bob Parr (Mr. Incredible). Within days, the image spread rapidly across social media platforms, inspiring countless variations and turning into a widespread meme format.</p>
+                    <p>This case demonstrates how a piece of content not originally intended as a meme can gain massive popularity once the internet community recognizes its comedic or symbolic potential.</p>
+    
+                </div>
+            </div>
+
+            <!-- Cheezburger -->
+            <div class="post">
+                <h2>CAN HAS CHEEZBURGER</h2>
+                <div>
+                    <span class="tag">Chronologically-iconic</span>
+                </div>
+                <p>One of the earliest and most recognizable internet memes featuring intentionally incorrect grammar: "I Can Has Cheezburger?"</p>
+                <img src="images/cheezburger.png" alt="Cheezburger">
+                <button class="read-more">More</button>
+                
+                <div class="post-details">
+                    <p>The "I Can Has Cheezburger?" meme emerged in 2007 from an image of a cat reaching for food while a caption mimicked childlike, grammatically incorrect speech. The phrase purposely contains multiple mistakes: missing articles, incorrect word order, and the humorous misspelling cheezburger.</p>
+                    <p>This style of captioning eventually became known as LOLspeak, which shaped early meme culture and influenced the development of modern internet humor. Its popularity led to the creation of the website icanhas.cheezburger.com, which became one of the biggest platforms for user-generated memes.</p>
+                    <p>This meme is classified as a chronologically iconic meme-one that has existed long enough to be recognized as part of the foundational history of internet culture.</p>
+                </div>
+            </div>
+
+            <!-- Frank -->
+            <div class="post">
+                <h2>Frank</h2>
+                <div>
+                    <span class="tag">Phonetic</span>
+                </div>
+                <p>A wordplay meme based on the name Frank and the adjective frank, which means “honest” or “open.”</p>
+                <img src="images/frank.png" alt="Frank">
+                <button class="read-more">More</button>
+                
+                <div class="post-details">
+                    <p>This meme relies on a simple yet effective pun. In English, Frank is a male name, while frank is an adjective meaning “honest.” The joke presents a dramatic dialogue that becomes absurd due to this ambiguity.</p>
+                    <p>A rough translation of the interaction:</p>
+                    <p>— Nathaniel… be frank… do you love me?</p>
+                    <p>— How can I be Frank if I’m Nathaniel?</p>
+                    <p>The humor comes from the character misunderstanding the expression “be frank” as a request to literally become a person named Frank. This type of meme is especially common in English, where identical spellings often carry unrelated meanings.</p>
+                    The humor comes from the character misunderstanding the expression “be frank” as a request to literally become a person named Frank. This type of meme is especially common in English, where identical spellings often carry unrelated meanings.
+                </div>
+            </div>
+            
+            <!-- Ocean -->
+            <div class="post">
+                <h2>Pacific Ocean</h2>
+                <div>
+                    <span class="tag">Phonetic</span>
+                </div>
+                <p>A meme about intrusive thoughts before falling asleep — in this case, the sudden realization that each “C” in Pacific Ocean is pronounced differently.</p>
+                <img src="images/ocean.png" alt="Ocean">
+                <button class="read-more">More</button>
+                
+                <div class="post-details">
+                    <p>This meme captures the familiar situation where random, unnecessary thoughts appear right before sleep and keep you awake. The character suddenly realizes that in the phrase Pacific Ocean, each letter C has a different pronunciation.</p>
+                    <p>In phonetic transcription, the phrase looks like this:</p>
+                    <p>[pəˈsɪfɪk ˈoʊʃən]</p>
+                    <p>If written out for Russian speakers, it would resemble Пасифик Оушен.
+                        The surprising discovery of three different sounds for the same letter perfectly represents the kind of odd, overthinking thoughts that strike at night and distract from falling asleep.</p>
+                </div>
+            </div>
+            
+            <!-- Interesting -->
+            <div class="post">
+                <h2>Interesting</h2>
+                <div>
+                    <span class="tag">Phonetic</span>
+                </div>
+                <p>A fully phonetic meme based on how the phrase into resting sounds almost identical to interesting when spoken quickly.</p>
+                <img src="images/interesting.png" alt="Interesting">
+                <button class="read-more">More</button>
+                
+                <div class="post-details">
+                    <p>This meme plays with phonetics — how words sound when spoken aloud. In the dialogue, one person says:</p>
+                    <p>— You told me you were interested!</p>
+                    <p>— I said I was into resting.</p>
+                    <p>When said rapidly, into resting sounds very similar to interesting.
+                        Because of this, the innocent phrase “I’m into resting” (meaning “I like to rest” or “I’m taking a break”) is misheard as “I’m interested.” The humor relies entirely on pronunciation, not spelling, making it a classic example of a phonetic meme.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+    
+    <footer>
+        <div class="social-links">
+            <a href="https://rutube.ru/video/f884aa6ed5f94120b7304506042fe5bb/"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>&copy; Spring 2025 Youth Slang Dictionary. All rights reserved.</p>
+        <p>Created with <i class="fas fa-heart" style="color: var(--primary);"></i></p>
+    </footer>
+    
+    <a href="#" class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></a>
+    
+    <script> 
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Read more buttons functionality
+        document.querySelectorAll('.read-more').forEach(button => {
+            button.addEventListener('click', function() {
+                const post = this.closest('.post');
+                const details = post.querySelector('.post-details');
+        
+                // переключаем блок с текстом
+                details.classList.toggle('active');
+        
+                if (details.classList.contains('active')) {
+                    this.textContent = 'Less';
+                    post.classList.add('expanded');    // картинка раскрывается
+                } else {
+                    this.textContent = 'More';
+                    post.classList.remove('expanded'); // картинка снова ограничена
+                }
+            });
+        });
+    </script>
+</body>
+</html>
